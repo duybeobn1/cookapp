@@ -1,0 +1,48 @@
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { ThemeProvider } from "./context/ThemeContext";
+import Layout from "./components/Layout";
+import Home from "./pages/Home";
+import Ingredients from "./pages/Ingredients";
+import Recipes from "./pages/Recipes";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import { AnimatePresence, motion } from "framer-motion";
+import "./App.css"
+
+function AnimatedRoutes() {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location.pathname}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.4 }}
+      >
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<Home />} />
+          <Route path="/ingredients" element={<Ingredients />} />
+          <Route path="/recipes" element={<Recipes />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+        </Routes>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <Router>
+        <Layout>
+          <AnimatedRoutes />
+        </Layout>
+      </Router>
+    </ThemeProvider>
+  );
+}
+
+export default App;
