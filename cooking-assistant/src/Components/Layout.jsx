@@ -1,5 +1,5 @@
-import { Link, useLocation } from "react-router-dom";
-import { useContext } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
 import { ThemeContext } from "../context/ThemeContext";
 import { FaUtensils } from "react-icons/fa";
 import { motion } from "framer-motion";
@@ -7,19 +7,32 @@ import { motion } from "framer-motion";
 const Layout = ({ children }) => {
   const { darkMode, setDarkMode } = useContext(ThemeContext);
   const location = useLocation();
+  const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    setIsAuthenticated(!!user);
+  }, [location.pathname]); // Recheck on route change
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setIsAuthenticated(false);
+    navigate("/login");
+  };
 
   return (
     <div className={darkMode ? "dark bg-gray-900 text-white" : "bg-gray-100 text-gray-900"}>
       {/* Navbar */}
       <header className="flex items-center justify-between p-3 bg-blue-600 shadow-md">
-        {/* Logo - Điều chỉnh khoảng cách hợp lý */}
-        <div className="flex items-center space-x-1 text-white text-xl font-bold">
+        {/* Logo */}
+        <div className="flex items-center space-x-2 text-white text-xl font-bold">
           <FaUtensils />
           <span>Cooking</span>
         </div>
 
-        {/* Điều hướng - Giảm khoảng cách giữa các link */}
-        <nav className="flex space-x-3">
+        {/* Navigation */}
+        <nav className="flex space-x-4">
           <Link 
             to="/" 
             className={`text-lg font-medium transition ${
@@ -46,8 +59,8 @@ const Layout = ({ children }) => {
           </Link>
         </nav>
 
-        {/* Dark Mode + Đăng nhập/Đăng ký - Điều chỉnh khoảng cách */}
-        <div className="flex items-center space-x-1">
+        {/* Dark Mode & Authentication */}
+        <div className="flex items-center space-x-3">
           {/* Dark Mode Toggle */}
           <motion.button 
             onClick={() => setDarkMode(!darkMode)}
@@ -62,17 +75,28 @@ const Layout = ({ children }) => {
             {darkMode ? "☀️" : "🌙"}
           </motion.button>
 
-          {/* Nút Đăng nhập / Đăng ký */}
-          <Link to="/login" className="px-3 py-3 text-sm bg-white text-blue-600 border rounded hover:bg-gray-200">
-            Đăng nhập
-          </Link>
-          <Link to="/signup" className="px-3 py-3 text-sm bg-green-500 text-white rounded hover:bg-green-600">
-            Đăng ký
-          </Link>
+          {/* Authentication Links */}
+          {isAuthenticated ? (
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+            >
+              Đăng xuất
+            </button>
+          ) : (
+            <>
+              <Link to="/login" className="px-4 py-2 bg-white text-blue-600 border rounded hover:bg-gray-200">
+                Đăng nhập
+              </Link>
+              <Link to="/signup" className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+                Đăng ký
+              </Link>
+            </>
+          )}
         </div>
       </header>
 
-      {/* Nội dung trang */}
+      {/* Main Content */}
       <main className="p-10 min-h-screen">{children}</main>
       
       {/* Footer */}

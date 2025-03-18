@@ -14,7 +14,7 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(""); // Clear previous errors
+    setError("");
     setLoading(true);
 
     try {
@@ -26,8 +26,9 @@ const Login = () => {
 
       const data = await response.json();
       if (response.ok) {
-        localStorage.setItem("user", JSON.stringify(data.user)); // ✅ Store user info
+        localStorage.setItem("user", JSON.stringify(data)); // ✅ Store user info
         navigate("/"); 
+        window.location.reload(); // 🔄 Refresh to update navbar
       } else {
         setError(data.message || "Sai email hoặc mật khẩu, vui lòng thử lại!");
         setShake(true);
@@ -52,7 +53,7 @@ const Login = () => {
         <input 
           type="text" 
           placeholder="Email" 
-          className="text-gray-100 w-full p-3 border border-gray-300 rounded mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="text-black w-full p-3 border border-gray-300 rounded mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required 
@@ -60,7 +61,7 @@ const Login = () => {
         <input 
           type="password" 
           placeholder="Mật khẩu" 
-          className="text-gray-100 w-full p-3 border border-gray-300 rounded mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="text-black w-full p-3 border border-gray-300 rounded mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required 
