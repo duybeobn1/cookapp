@@ -1,21 +1,48 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const Recipes = () => {
-  return (
-    <div>
-      <h1 className="text-2xl font-bold">Công thức nấu ăn</h1>
-      <p className="text-gray-600">Danh sách công thức gợi ý dựa trên nguyên liệu.</p>
+  const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-      <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="border p-4 rounded-lg shadow-md">
-          <h2 className="text-lg font-semibold">Phở Bò</h2>
-          <p className="text-gray-600">Nguyên liệu: Bò, bánh phở, hành lá</p>
-        </div>
-        <div className="border p-4 rounded-lg shadow-md">
-          <h2 className="text-lg font-semibold">Canh Chua Cá</h2>
-          <p className="text-gray-600">Nguyên liệu: Cá, cà chua, me</p>
-        </div>
-      </div>
+  useEffect(() => {
+    const token = localStorage.getItem("token"); // Get stored token
+
+    fetch("http://localhost:8080/api/recipes", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // ✅ Send JWT token
+      },
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to fetch recipes");
+        return response.json();
+      })
+      .then((data) => {
+        setRecipes(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p className="text-red-500">Error: {error}</p>;
+
+  return (
+    <div className="p-5">
+      <h1 className="text-3xl font-bold mb-4">Recipes</h1>
+      <ul className="list-disc pl-5">
+        {recipes.map((recipe) => (
+          <li key={recipe.id}>
+            <h2 className="text-xl font-semibold">{recipe.name}</h2>
+            <p>{recipe.description}</p>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
