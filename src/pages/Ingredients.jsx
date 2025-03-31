@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 const Ingredients = () => {
   const [ingredients, setIngredients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const { isAuthenticated } = useContext(AuthContext);
 
   useEffect(() => {
-    const token = localStorage.getItem("token"); // Get JWT token
+    const token = localStorage.getItem("token");
 
     if (!token) {
       setError("Unauthorized: Please log in");
@@ -18,21 +21,17 @@ const Ingredients = () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // ✅ Send JWT token
+        Authorization: `Bearer ${token}`,
       },
     })
       .then((response) => {
-        if (response.status === 401) {
-          throw new Error("Unauthorized: Invalid token");
-        }
-        if (!response.ok) {
-          throw new Error("Failed to fetch ingredients");
-        }
+        if (response.status === 401) throw new Error("Unauthorized: Invalid token");
+        if (!response.ok) throw new Error("Failed to fetch ingredients");
         return response.json();
       })
       .then((data) => {
         setIngredients(data);
-        setLoading(false);
+        setLoading(false); 
       })
       .catch((err) => {
         setError(err.message);
@@ -45,14 +44,32 @@ const Ingredients = () => {
 
   return (
     <div className="p-5">
-      <h1 className="text-3xl font-bold mb-4">Ingredients</h1>
-      <ul className="list-disc pl-5">
-        {ingredients.map((ingredient) => (
-          <li key={ingredient.id}>
-            {ingredient.name} - {ingredient.quantity} {ingredient.unit}
-          </li>
-        ))}
-      </ul>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-3xl font-bold">Ingredients</h1>
+        {isAuthenticated && (
+          <Link
+            to="/ingredients/add"
+            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
+          >
+            + Add Ingredient
+          </Link>
+        )}
+      </div>
+
+      {ingredients.length === 0 ? (
+        <p className="text-gray-500">No ingredients found.</p>
+      ) : (
+        <ul className="list-disc pl-5 space-y-2">
+          {ingredients.map((ingredient) =>
+            ingredient.name ? (
+              <li key={ingredient.id} className="text-lg">
+                <span className="font-semibold">{ingredient.name}</span> —{" "}
+                {ingredient.quantity} {ingredient.unit || ""}
+              </li>
+            ) : null
+          )}
+        </ul>
+      )}
     </div>
   );
 };
