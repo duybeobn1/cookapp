@@ -6,6 +6,7 @@ import Ingredients from "./pages/Ingredients";
 import Recipes from "./pages/Recipes";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import EditIngredient from "./pages/EditIngredients";
 import AddIngredient from "./pages/AddIngredient";
 import { AnimatePresence, motion } from "framer-motion";
 import "./App.css"
@@ -29,6 +30,7 @@ function AnimatedRoutes() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/ingredients/add" element={<AddIngredient />} />
+          <Route path="/ingredients/edit/:id" element={<EditIngredient />} />
         </Routes>
       </motion.div>
     </AnimatePresence>

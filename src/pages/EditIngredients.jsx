@@ -1,7 +1,9 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
-const AddIngredient = () => {
+const EditIngredient = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     category: "",
@@ -10,13 +12,31 @@ const AddIngredient = () => {
     expirationDate: "",
     note: "",
   });
-
   const [error, setError] = useState("");
-  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    fetch(`http://localhost:8080/api/ingredients/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setFormData({
+          name: data.name,
+          category: data.category,
+          quantity: data.quantity,
+          unit: data.unit,
+          expirationDate: data.expirationDate || "",
+          note: data.note || "",
+        });
+      })
+      .catch((err) => setError("Failed to load ingredient"));
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     setFormData((prev) => ({
       ...prev,
       [name]: name === "quantity" ? parseFloat(value) : value,
@@ -25,13 +45,11 @@ const AddIngredient = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    const token = localStorage.getItem("token");
 
     try {
-      const token = localStorage.getItem("token");
-
-      const response = await fetch("http://localhost:8080/api/ingredients", {
-        method: "POST",
+      const response = await fetch(`http://localhost:8080/api/ingredients/${id}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -40,8 +58,7 @@ const AddIngredient = () => {
       });
 
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || "Failed to add ingredient");
+        throw new Error("Failed to update ingredient");
       }
 
       navigate("/ingredients");
@@ -52,8 +69,7 @@ const AddIngredient = () => {
 
   return (
     <div className="max-w-xl mx-auto p-5">
-      <h1 className="text-2xl font-bold mb-6">Add New Ingredient</h1>
-
+      <h1 className="text-2xl font-bold mb-6">Edit Ingredient</h1>
       {error && <p className="text-red-500 mb-4">{error}</p>}
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -66,7 +82,6 @@ const AddIngredient = () => {
           required
           className="w-full p-2 border rounded"
         />
-
         <input
           type="text"
           name="category"
@@ -75,27 +90,23 @@ const AddIngredient = () => {
           onChange={handleChange}
           className="w-full p-2 border rounded"
         />
-
         <input
           type="number"
-          step="0.01"
           name="quantity"
           placeholder="Quantity"
           value={formData.quantity}
           onChange={handleChange}
-          required
           className="w-full p-2 border rounded"
+          step="0.01"
         />
-
         <input
           type="text"
           name="unit"
-          placeholder="Unit (e.g. grams, ml)"
+          placeholder="Unit"
           value={formData.unit}
           onChange={handleChange}
           className="w-full p-2 border rounded"
         />
-
         <input
           type="date"
           name="expirationDate"
@@ -103,7 +114,6 @@ const AddIngredient = () => {
           onChange={handleChange}
           className="w-full p-2 border rounded"
         />
-
         <textarea
           name="note"
           placeholder="Note (e.g. 3 pieces = 270g)"
@@ -111,16 +121,15 @@ const AddIngredient = () => {
           onChange={handleChange}
           className="w-full p-2 border rounded"
         ></textarea>
-
         <button
           type="submit"
-          className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600"
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
         >
-          Add Ingredient
+          Save Changes
         </button>
       </form>
     </div>
   );
 };
 
-export default AddIngredient;
+export default EditIngredient;
