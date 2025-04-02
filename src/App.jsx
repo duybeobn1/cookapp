@@ -1,13 +1,13 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
-import Layout from "./components/Layout";
-import Home from "./pages/Home";
-import Ingredients from "./pages/Ingredients";
-import Recipes from "./pages/Recipes";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import EditIngredient from "./pages/EditIngredients";
-import AddIngredient from "./pages/AddIngredient";
+import Layout from "./components/Layout.jsx";
+import Home from "./pages/Home.jsx";
+import Ingredients from "./pages/Ingredients.jsx";
+import Recipes from "./pages/Recipes.jsx";
+import Login from "./pages/Login.jsx";
+import Signup from "./pages/Signup.jsx";
+import EditIngredient from "./pages/EditIngredients.jsx";
+import AddIngredient from "./pages/AddIngredient.jsx";
 import { AnimatePresence, motion } from "framer-motion";
 import "./App.css"
 
