@@ -42,6 +42,7 @@ const AddRecipe = () => {
       }
 
       navigate("/recipes");
+      window.location.reload();
     } catch (err) {
       setError(err.message);
     }

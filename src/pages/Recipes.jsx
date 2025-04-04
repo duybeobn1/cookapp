@@ -22,7 +22,10 @@ const Recipes = () => {
         if (!res.ok) throw new Error("Failed to fetch recipes");
         return res.json();
       })
-      .then((data) => setRecipes(data))
+      .then((data) => {
+        console.log("📦 Recipes received:", data);
+        setRecipes(data);
+      })
       .catch((err) => setError(err.message));
   }, []);
 

@@ -8,6 +8,8 @@ import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
 import EditIngredient from "./pages/EditIngredients.jsx";
 import AddIngredient from "./pages/AddIngredient.jsx";
+import AddRecipe from "./pages/AddRecipe.jsx";
+import EditRecipe from "./pages/EditRecipe.jsx";
 import { AnimatePresence, motion } from "framer-motion";
 import "./App.css"
 
@@ -31,6 +33,9 @@ function AnimatedRoutes() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/ingredients/add" element={<AddIngredient />} />
           <Route path="/ingredients/edit/:id" element={<EditIngredient />} />
+          <Route path="/recipes/add" element={<AddRecipe />} />
+          <Route path="/recipes/edit/:id" element={<EditRecipe />} />
+
         </Routes>
       </motion.div>
     </AnimatePresence>
