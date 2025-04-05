@@ -12,6 +12,7 @@ import AddRecipe from "./pages/AddRecipe.jsx";
 import EditRecipe from "./pages/EditRecipe.jsx";
 import { AnimatePresence, motion } from "framer-motion";
 import "./App.css"
+import Scan from './pages/Scan';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -35,6 +36,7 @@ function AnimatedRoutes() {
           <Route path="/ingredients/edit/:id" element={<EditIngredient />} />
           <Route path="/recipes/add" element={<AddRecipe />} />
           <Route path="/recipes/edit/:id" element={<EditRecipe />} />
+          <Route path="/scan" element={<Scan />} />
 
         </Routes>
       </motion.div>
